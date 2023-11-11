@@ -2,55 +2,89 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Candidates</title>
-    <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-            integrity="sha384-
-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-            crossorigin="anonymous">
-    <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-
-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-            crossorigin="anonymous"></script>
+    <title>Products</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
+<body>
+<div class="container">
+    <h2>Products</h2>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Unit</th>
+            <th>Manufacturer</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody id="tableBody">
+        <!-- Data will be dynamically added here using JavaScript -->
+        </tbody>
+    </table>
+</div>
+
 <script>
-    function fectchData(){
-        fetch("products")
-            .then(response => response.json()
-                .then(data =>{console.log(data)})
-            )
+    function fetchData() {
+        fetch("/products")
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById('tableBody');
+
+                // Clear existing rows
+                tableBody.innerHTML = "";
+
+                // Iterate through the data and add rows to the table
+                data.forEach(product => {
+                    const row = document.createElement('tr');
+
+                    const idCell = document.createElement('td');
+                    idCell.textContent = product.product_id;
+                    row.appendChild(idCell);
+
+                    const nameCell = document.createElement('td');
+                    nameCell.textContent = product.name;
+                    row.appendChild(nameCell);
+
+                    const descriptionCell = document.createElement('td');
+                    descriptionCell.textContent = product.description;
+                    row.appendChild(descriptionCell);
+
+                    const unitCell = document.createElement('td');
+                    unitCell.textContent = product.unit;
+                    row.appendChild(unitCell);
+
+                    const manufacturerCell = document.createElement('td');
+                    manufacturerCell.textContent = product.manufacturer;
+                    row.appendChild(manufacturerCell);
+
+                    const statusCell = document.createElement('td');
+                    statusCell.textContent = product.status;
+                    row.appendChild(statusCell);
+
+                    const editLink = document.createElement('a');
+                    editLink.href = "/edit/" + product.id; // Điều chỉnh href tùy thuộc vào ứng dụng của bạn
+                    editLink.textContent = "Sửa";
+                    editCell.appendChild(editLink);
+                    row.appendChild(editCell);
+                    //
+                    // const deleteLink = document.createElement('a');
+                    // deleteLink.href = "/delete/" + order.id; // Điều chỉnh href tùy thuộc vào ứng dụng của bạn
+                    // deleteLink.textContent = "Xóa";
+                    // deleteCell.appendChild(deleteLink);
+                    // row.appendChild(deleteCell)
+
+                    tableBody.appendChild(row);
+
+                });
+            })
             .catch(error => console.log(error));
     }
-    fectchData();
+
+    document.addEventListener('DOMContentLoaded', fetchData);
 </script>
-<body>
-<div th:switch="${products}" >
-    <h2 th:case="null">No candidates yet!</h2>
-    <div th:case="*">
-        <h2>Candidates</h2>
-        <table class="table table-hover">
-            <thead>
-            <tr>
-                <th>Id</th><th>Name</th>
-
-                <th>Edit</th>
-                <th>Delete</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="product : ${products}">
-                <td th:text="${product.id}"></td>
-
-
-                <td><a th:href="@{/edit/{id}(id=${candidate.id})}">Edit</a></td>
-                <td><a th:href="@{/delete/{id}(id=${candidate.id})}">Delete</a></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
 </body>
 </html>
