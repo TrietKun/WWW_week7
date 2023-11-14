@@ -2,10 +2,13 @@ package com.example.demo.backend.models;
 
 import com.example.demo.backend.enums.ProductStatus;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Getter
+@Setter
 @Entity
 @Table(name = "product")
 @NamedQueries(value = {

@@ -8,4 +8,8 @@ public class Controllers {
     public String myPage(){
         return "admin/product/list-product";
     }
+    @GetMapping("/add-product")
+    public String addProductPage() {
+        return "admin/product/them";
+    }
 }

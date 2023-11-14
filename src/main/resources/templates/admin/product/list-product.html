@@ -25,9 +25,19 @@
         <!-- Data will be dynamically added here using JavaScript -->
         </tbody>
     </table>
+    <div>
+        <h2>Thêm sản phẩm</h2>
+        <!-- Sử dụng thẻ button để tạo nút -->
+        <button type="button" class="btn btn-primary" onclick=redirectToAddProduct()>Thêm sản phẩm</button>
+    </div>
 </div>
 
 <script>
+
+    function redirectToAddProduct() {
+        // Thay đổi vị trí của trình duyệt để chuyển hướng
+        window.location.href = '/add-product'; // Thay '/path-to-add-product' bằng đường dẫn thực tế của trang thêm sản phẩm
+    }
     function fetchData() {
         fetch("/products")
             .then(response => response.json())
@@ -47,39 +57,77 @@
 
                     const nameCell = document.createElement('td');
                     nameCell.textContent = product.name;
+                    nameCell.contentEditable = true;
                     row.appendChild(nameCell);
 
                     const descriptionCell = document.createElement('td');
                     descriptionCell.textContent = product.description;
+                    descriptionCell.contentEditable = true;
                     row.appendChild(descriptionCell);
 
                     const unitCell = document.createElement('td');
                     unitCell.textContent = product.unit;
+                    unitCell.contentEditable = true;
                     row.appendChild(unitCell);
 
                     const manufacturerCell = document.createElement('td');
                     manufacturerCell.textContent = product.manufacturer;
+                    manufacturerCell.contentEditable = true;
                     row.appendChild(manufacturerCell);
 
                     const statusCell = document.createElement('td');
                     statusCell.textContent = product.status;
                     row.appendChild(statusCell);
 
-                    const editLink = document.createElement('a');
-                    editLink.href = "/edit/" + product.id; // Điều chỉnh href tùy thuộc vào ứng dụng của bạn
+                    const editCell = document.createElement('td');
+                    const editLink = document.createElement('button');
+
+                    editLink.addEventListener('click',function (){
+                        saveChanges(product.product_id,
+                            nameCell.textContent,
+                            descriptionCell.textContent,
+                            unitCell.textContent,
+                            manufacturerCell.textContent,
+                            statusCell.textContent);
+                        location.reload(true);
+                    })
                     editLink.textContent = "Sửa";
                     editCell.appendChild(editLink);
                     row.appendChild(editCell);
-                    //
-                    // const deleteLink = document.createElement('a');
-                    // deleteLink.href = "/delete/" + order.id; // Điều chỉnh href tùy thuộc vào ứng dụng của bạn
-                    // deleteLink.textContent = "Xóa";
-                    // deleteCell.appendChild(deleteLink);
-                    // row.appendChild(deleteCell)
+
+                    const deleteCell = document.createElement('td');
+                    const deleteLink = document.createElement('a');
+                    deleteLink.href = "/delete/" + product.product_id; // Điều chỉnh href tùy thuộc vào ứng dụng của bạn
+                    deleteLink.textContent = "Xóa";
+                    deleteCell.appendChild(deleteLink);
+                    row.appendChild(deleteCell);
 
                     tableBody.appendChild(row);
 
                 });
+            })
+            .catch(error => console.log(error));
+    }
+
+    function saveChanges(product_id, name, description, unit, manufacturer, status) {
+        // Perform a fetch request to update the data on the server
+        fetch(`/save/${product_id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: name,
+                description: description,
+                unit: unit,
+                manufacturer: manufacturer,
+                status: status,
+            }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Handle any response or UI updates after saving
+                console.log('Changes saved successfully:', data);
             })
             .catch(error => console.log(error));
     }

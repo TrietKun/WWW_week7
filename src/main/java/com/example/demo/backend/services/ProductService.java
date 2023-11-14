@@ -22,7 +22,13 @@ public class ProductService {
     public List<Product> findAll(){
         return productRepository.findAll();
     }
-    public void delete(Long id){
+    public void deleteById(Long id){
         productRepository.deleteById(id);
+    }
+    public Product save(Product product){
+        return productRepository.save(product);
+    }
+    public Product findById(Long id){
+        return productRepository.findById(id).get();
     }
 }
